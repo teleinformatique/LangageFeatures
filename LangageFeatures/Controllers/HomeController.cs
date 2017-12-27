@@ -19,9 +19,27 @@ namespace LangageFeatures.Controllers
                 decimal? price = p?.Price ?? 0;
                 string relatedName = p?.Related?.Name ?? "<None>";
 
-                results.Add(string.Format("Name: {0}, Price: {1}, related: {2}", name, price, relatedName));
+                results.Add($"Name: {name}, Price: {price:C2}, related: {relatedName}");
             }
-            return View(results);
+
+            //index initialiser
+            Dictionary<string, Product> products = new Dictionary<string, Product> {
+                ["Kayak"] = new Product { Name = "Kayak", Price = 275M, Category = "Water Craft" },
+                ["LifeJacket"] = new Product { Name = "Lifejacket", Price = 48.95M }
+            };
+
+            //pattern matching
+            object[] data = new object[] { 275M, 29.9M, "apple", 100, 0 };
+            decimal total = 0;
+            for (int i = 0; i < data.Length; i++)
+            {
+                if (data[i] is decimal d)
+                {
+                    total += d;
+                }
+            }
+
+            return View(new string [] { $"Total: {total:C2}" });
         }
     }
 }
