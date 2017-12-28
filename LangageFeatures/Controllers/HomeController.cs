@@ -9,6 +9,11 @@ namespace LangageFeatures.Controllers
 {
     public class HomeController : Controller
     {
+        bool FilterByPrice(Product p)
+        {
+            return (p?.Price ?? 0) <= 20;
+        }
+
         public ViewResult Index()
         {
             List<string> results = new List<string>();
@@ -53,13 +58,22 @@ namespace LangageFeatures.Controllers
             ShopingCart cart = new ShopingCart { Products = Product.GetProducts() };
             decimal cartTotal = cart.TotalPrices();
             Product[] productArray = {
-            new Product {Name = "Kayak", Price = 275M},
-            new Product {Name = "Lifejacket", Price = 48.95M},
-            new Product {Name = "Soccer ball", Price = 19.50M},
-            new Product {Name = "Corner flag", Price = 34.95M}
+                new Product {Name = "Kayak", Price = 275M},
+                new Product {Name = "Lifejacket", Price = 48.95M},
+                new Product {Name = "Soccer ball", Price = 19.50M},
+                new Product {Name = "Corner flag", Price = 34.95M}
             };
-            decimal arrayTotal = productArray.FilterByPrice(20).TotalPrices();
-            return View(new string [] { $"Total: {cartTotal:C2} TotalArray: {arrayTotal:C2}" });
+            //decimal arrayTotal = productArray.FilterByPrice(20).TotalPrices();
+
+            Func<Product, bool> nameFilter = delegate (Product p)
+            {
+                return p?.Name?[0] == 'S';
+            };
+
+            decimal priceFilterTotal = productArray.Filter(p => (p?.Price ?? 0) >= 20).TotalPrices();
+            decimal nameFilterTotal = productArray.Filter(p => (p?.Name[0] == 'S')).TotalPrices();
+
+            return View(new string [] { $"priceFilterTotal: {priceFilterTotal:C2}", $"nameFilterTotal: {nameFilterTotal:C2}" });
         }
     }
 }
